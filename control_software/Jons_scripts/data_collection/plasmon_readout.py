@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-@author: Adrian Sinclair
+@author : Jonathan Hoh
 Initial template for photo-mixer readout on ROACH2 system with 512MHz digizers
 
 """
@@ -12,7 +12,7 @@ import numpy as np
 
 katcp_port=7147
 roach = '192.168.40.79'
-firmware_fpg = 'lock_in_v2_2021_Apr_29_1629.fpg'
+firmware_fpg = 'liss_no_mag_2022_Dec_05_0404.fpg'
 #firmware_fpg = 'lock_in_v1_2021_Mar_25_1417.fpg'
 fpga = casperfpga.katcp_fpga.KatcpFpga(roach, timeout = 3.)
 time.sleep(1)
@@ -29,12 +29,11 @@ else:
 # Initializing registers
 
 fpga.write_int('fft_shift', 2**9)
-fpga.write_int('mux_select', 0) # 0 for constant, 1 for multiply
-fpga.write_int('cordic_freq', 2) # 
-fpga.write_int('sync_accum_len', 2**19-1) # 2**19/2**9 = 1024 accumulations
-fpga.write_int('sync_accum_reset', 0) #
-fpga.write_int('sync_accum_reset', 1) #
-fpga.write_int('sync_accum_reset', 0) #
+fpga.write_int('cordic_freq', 1) # 
+fpga.write_int('cum_trigger_accum_len', 2**23) # 2**19/2**9 = 1024 accumulations
+fpga.write_int('cum_trigger_accum_reset', 0) #
+fpga.write_int('cum_trigger_accum_reset', 1) #
+fpga.write_int('cum_trigger_accum_reset', 0) #
 fpga.write_int('start_dac', 0) #
 fpga.write_int('start_dac', 1) #
 
@@ -96,12 +95,26 @@ def plotAccum():
 
 def read_accum_snap():
         # 2**9 64bit wide 32bits for mag0 and 32bits for mag1    
-        fpga.write_int('accum_snap_accum_snap_ctrl', 0)
-        fpga.write_int('accum_snap_accum_snap_ctrl', 1)
-        accum_data = np.fromstring(fpga.read('accum_snap_accum_snap_bram', 16*2**9), dtype = '>i').astype('float')
+        fpga.write_int('accum_snap1_accum_snap_ctrl', 0)
+        fpga.write_int('accum_snap1_accum_snap_ctrl', 1)
+        accum_data = np.fromstring(fpga.read('accum_snap1_accum_snap_bram', 16*2**9), dtype = '>i').astype('float')
         I = accum_data[0::2]
         Q = accum_data[1::2]
         return I, Q
+
+def bin_reading(bin):
+    i = 0
+    i_vec = []
+    q_vec = []
+    while i < 1000:
+        I,Q = read_accum_snap()
+        i_vec.append(I[bin])
+        q_vec.append(Q[bin])
+        i += 1
+    plt.plot(i_vec)
+    return i_vec, q_vec
+
+
 
 def plotADC():
         # Plots the ADC timestream
