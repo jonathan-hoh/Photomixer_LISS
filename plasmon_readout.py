@@ -17,15 +17,17 @@ firmware_fpg = 'liss_no_mag_2022_Dec_05_0404.fpg'
 fpga = casperfpga.katcp_fpga.KatcpFpga(roach, timeout = 3.)
 time.sleep(1)
 if (fpga.is_connected() == True):
-    print 'Connected to the FPGA '
+    print ('Connected to the FPGA ')
 else:
-    print 'Not connected to the FPGA'
+    print ('Not connected to the FPGA')
 
 stime = time.time()
 fpga.upload_to_ram_and_program(firmware_fpg)
-print 'Using Jon Hohs Proprietary Black-Magic Optimization Algorithm \nFPGA @ address %s programmed in %.2f seconds \n\n Jons withcraft reduced program time by %.2f seconds' % (fpga.host, time.time() - stime, 31.89*(time.time() - stime))
+print ('Using Jon Hohs Proprietary Black-Magic Optimization Algorithm \nFPGA @ address %s programmed in %.2f seconds \n\n Jons withcraft reduced program time by %.2f seconds' % (fpga.host, time.time() - stime, 31.89*(time.time() - stime)))
 time.sleep(1)
-
+print ('\n NAND Gate Flash Success')
+time.sleep(1)
+print('\nFirware ready for execution')
 # Initializing registers
 
 fpga.write_int('fft_shift', 2**9)
