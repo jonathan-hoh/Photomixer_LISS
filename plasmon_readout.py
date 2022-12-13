@@ -173,7 +173,7 @@ def findmaxbin():
 	mags =(np.sqrt(I**2 + Q**2))[:1016]
 	#mags = 20*np.log10(mags/np.max(mags))[:1016]
 	mags = 10*np.log10(mags+1e-20)[:1016]
-	max_bin = np.max(mags)
+	max_bin = np.argmax(mags)
 	return max_bin
 
 def dataCollectSimp(chan, lines):
