@@ -166,17 +166,32 @@ def plotADC():
 			count += 1
 		return
 
+def findmaxbin():
+	I, Q = read_accum_snap()
+	I = I[2:]
+	Q = Q[2:]
+	mags =(np.sqrt(I**2 + Q**2))[:1016]
+	#mags = 20*np.log10(mags/np.max(mags))[:1016]
+	mags = 10*np.log10(mags+1e-20)[:1016]
+	max_bin = np.max(mags)
+	return max_bin
+
 def dataCollect4Chan(chan1, chan2, chan3, chan4, lines):
-	runtime = lines * 10
-	count1 = 0
-	rate = 16
-	#file = open('%d_sec_lock_in_accum_%d_%d_%d_%d.csv'%(runtime, chan1,chan2,chan3,chan4), 'w')
-	file = open('%d_sec_hoh_spec_accum_%d_%d_%d_%d.csv'%(runtime, chan1,chan2,chan3,chan4), 'w')
-	writer = csv.writer(file)
+	# In its current iteration, 10 seconds of data are printed per line
 	seconds_per_line = 10
+	runtime = lines * seconds_per_line
+	count1 = 0
+	rate = 16 # This is the accumulation frequency, in the full-scale case, 16 Hz
+	
+	# Open up a file to save CSV data to, give it unique name based on runtime and channels
+	file = open('%d_sec_LISS_accum_%d_%d_%d_%d.csv'%(runtime, chan1,chan2,chan3,chan4), 'w')
+	writer = csv.writer(file)
 	cols = rate * seconds_per_line
-	tau = np.logspace(-1, 3, 50)
+	
+	# Create a header row in CSV file with channel names
 	writer.writerow([chan1, chan2, chan3, chan4])
+	
+	# Iterate through the rows of the CSV file
 	while (count1 < lines):
 		print('we are %d/%d of the way through this shit'%(count1,lines))	    
 		vals1 = np.zeros(cols)
@@ -184,6 +199,8 @@ def dataCollect4Chan(chan1, chan2, chan3, chan4, lines):
 		vals3 = np.zeros(cols)
 		vals4 = np.zeros(cols)
 		count2 = 0
+
+		# Iterate through the columns of the CSV file
 		while (count2 < cols):
 			I, Q = read_accum_snap()
 			I = I[2:]
@@ -192,17 +209,27 @@ def dataCollect4Chan(chan1, chan2, chan3, chan4, lines):
 			#mags = 20*np.log10(mags/np.max(mags))[:1016]
 			mags = 10*np.log10(mags+1e-20)[:1016]
 			accum_data = 10*np.log10(mags+1e-20)[:1016]
-			#print(mags)
+
+			# val1-val4 are the accumulation magnitude values for each of the chosen channels
 			(val1, val2, val3, val4) = (accum_data[chan1], accum_data[chan2], accum_data[chan3], accum_data[chan4])
+			
+			# vals1-vals4 are all of the accum magnitudes for the given channel in a single row of data
 			vals1[count2] = val1
 			vals2[count2] = val2
 			vals3[count2] = val3
 			vals4[count2] = val4
+			
 			#print('this is column number %d with a value of %d'%(count2, val))
-			count2 += 1
+			# count2 will iterate until it reaches the column max, which here is 160 (equivalent to 10 seconds of data)
+			count2 += 1 # iterate by 1 column
+
+		# Once all of the columns for a single row are collected, the code dumps those values for all 4 bins to CSV file
 		writer.writerow(vals1)
 		writer.writerow(vals2)
 		writer.writerow(vals3)
 		writer.writerow(vals4)
-		count1 += 1
+		
+		# Iterate through another line of the CSV file and repeat column population
+		count1 += 1 # Iterations will continue until reaching the desired run-time of simulation
+	
 	file.close()
