@@ -176,6 +176,35 @@ def findmaxbin():
 	max_bin = np.max(mags)
 	return max_bin
 
+def dataCollectSimp(chan, lines):
+	# In its current iteration, 10 seconds of data are printed per line
+	seconds_per_line = 10
+	count1 = 0
+	rate = 16
+	file = open('spec_data_%d.csv'%(chan), 'w')
+	writer = csv.writer(file)
+	
+	cols = rate * seconds_per_line
+	tau = np.logspace(-1, 3, 50)
+	writer.writerow([chan])
+
+	
+	while (count1 < lines):
+		print('we are %d/%d of the way through this shit'%(count1,lines))	    
+		vals = np.zeros(cols)
+		count2 = 0
+		while (count2 < cols):
+			accum_data = read_accum_snap()
+			mags = 10*np.log10(accum_data+1e-20)[:1016]
+			#print(mags)
+			val = accum_data[chan]
+			vals[count2] = val
+			#print('this is column number %d with a value of %d'%(count2, val))
+			count2 += 1
+		writer.writerow(vals)
+		count1 += 1
+	file.close()
+
 def dataCollect4Chan(chan1, chan2, chan3, chan4, lines):
 	# In its current iteration, 10 seconds of data are printed per line
 	seconds_per_line = 10
