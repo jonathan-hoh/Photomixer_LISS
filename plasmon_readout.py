@@ -175,7 +175,8 @@ def findmaxbin():
 	mags = 10*np.log10(mags+1e-20)[:1016]
 	max_bin = np.argmax(mags)
 	max_val = np.max(mags)
-	return max_bin
+	print('Maximum power of %d dBW at bin %d'%(max_val, max_bin))
+	return 
 
 def dataCollectSimp(chan, lines):
 	# In its current iteration, 10 seconds of data are printed per line
@@ -188,18 +189,18 @@ def dataCollectSimp(chan, lines):
 	cols = rate * seconds_per_line
 	tau = np.logspace(-1, 3, 50)
 	writer.writerow([chan])
-
 	
 	while (count1 < lines):
 		print('we are %d/%d of the way through this shit'%(count1,lines))	    
 		vals = np.zeros(cols)
 		count2 = 0
 		while (count2 < cols):
-			accum_data = read_accum_snap()
-			mags = 10*np.log10(accum_data+1e-20)[:1016]
-			#print(mags)
-			val = accum_data[chan]
-			vals[count2] = val
+			I, Q = read_accum_snap()
+			I = I[2:]
+			Q = Q[2:]
+			mag =(np.sqrt(I**2 + Q**2))[chan]
+			accum_data = 10*np.log10(mag+1e-20)
+			vals[count2] = accum_data
 			#print('this is column number %d with a value of %d'%(count2, val))
 			count2 += 1
 		writer.writerow(vals)
