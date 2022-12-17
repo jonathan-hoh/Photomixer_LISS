@@ -214,14 +214,14 @@ def dataCollect4Chan(chan1, chan2, chan3, chan4, lines):
 	count1 = 0
 	rate = 16 # This is the accumulation frequency, in the full-scale case, 16 Hz
 	
-	# Open up a file to save CSV data to, give it unique name based on runtime and channels
+	# Open up a file to save CSV
+	#  data to, give it unique name based on runtime and channels
 	file = open('%d_sec_LISS_accum_%d_%d_%d_%d.csv'%(runtime, chan1,chan2,chan3,chan4), 'w')
 	writer = csv.writer(file)
 	cols = rate * seconds_per_line
 	
 	# Create a header row in CSV file with channel names
 	writer.writerow([chan1, chan2, chan3, chan4])
-	
 	# Iterate through the rows of the CSV file
 	while (count1 < lines):
 		print('we are %d/%d of the way through this shit'%(count1,lines))	    
@@ -236,19 +236,26 @@ def dataCollect4Chan(chan1, chan2, chan3, chan4, lines):
 			I, Q = read_accum_snap()
 			I = I[2:]
 			Q = Q[2:]
-			mags =(np.sqrt(I**2 + Q**2))[:1016]
-			#mags = 20*np.log10(mags/np.max(mags))[:1016]
-			mags = 10*np.log10(mags+1e-20)[:1016]
-			accum_data = 10*np.log10(mags+1e-20)[:1016]
+			mags = []
+			accum_data = [0,0,0,0]
+			mags.append((np.sqrt(I**2 + Q**2))[chan1])
+			mags.append((np.sqrt(I**2 + Q**2))[chan2])
+			mags.append((np.sqrt(I**2 + Q**2))[chan3])
+			mags.append((np.sqrt(I**2 + Q**2))[chan4])
+			#mags = 20*np.log10(mags/np.max(mags))[:1016]     
+			accum_data[0] = 10*np.log10(mags[0]+1e-20)
+			accum_data[1] = 10*np.log10(mags[1]+1e-20)
+			accum_data[2] = 10*np.log10(mags[2]+1e-20)
+			accum_data[3] = 10*np.log10(mags[3]+1e-20)
 
 			# val1-val4 are the accumulation magnitude values for each of the chosen channels
 			(val1, val2, val3, val4) = (accum_data[chan1], accum_data[chan2], accum_data[chan3], accum_data[chan4])
 			
 			# vals1-vals4 are all of the accum magnitudes for the given channel in a single row of data
-			vals1[count2] = val1
-			vals2[count2] = val2
-			vals3[count2] = val3
-			vals4[count2] = val4
+			vals1[count2] = accum_data[0]
+			vals2[count2] = accum_data[1]
+			vals3[count2] = accum_data[2]
+			vals4[count2] = accum_data[3]
 			
 			#print('this is column number %d with a value of %d'%(count2, val))
 			# count2 will iterate until it reaches the column max, which here is 160 (equivalent to 10 seconds of data)
