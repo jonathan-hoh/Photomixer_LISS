@@ -251,7 +251,7 @@ def dataCollect4Chan(chan1, chan2, chan3, chan4, lines):
 			accum_data[3] = 10*np.log10(mags[3]+1e-20)
 
 			# val1-val4 are the accumulation magnitude values for each of the chosen channels
-			(val1, val2, val3, val4) = (accum_data[chan1], accum_data[chan2], accum_data[chan3], accum_data[chan4])
+			#(val1, val2, val3, val4) = (accum_data[0], accum_data[1], accum_data[2], accum_data[3])
 			
 			# vals1-vals4 are all of the accum magnitudes for the given channel in a single row of data
 			vals1[count2] = accum_data[0]
