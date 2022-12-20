@@ -10,7 +10,11 @@ import matplotlib.pyplot as plt
 import struct
 import numpy as np
 import csv
+import scipy.stats as stats
 
+# Establish parameters and constant based on hardware design
+f_s = 500*10**3 # Sampling freq in Hertz
+fft_len = 2**9
 
 katcp_port=7147
 roach = '192.168.40.79'
@@ -118,8 +122,6 @@ def bin_reading(bin):
 	plt.plot(i_vec)
 	return i_vec, q_vec
 
-
-
 def plotADC():
 		# Plots the ADC timestream
 		fig = plt.figure(figsize=(10.24,7.68))
@@ -175,8 +177,8 @@ def findmaxbin():
 	mags = 10*np.log10(mags+1e-20)[:1016]
 	max_bin = np.argmax(mags)
 	max_val = np.max(mags)
-	print('Maximum power of %d dBW at bin %d'%(max_val, max_bin))
-	return 
+	#print('Maximum power of %d dBW at bin %d'%(max_val, max_bin))
+	return max_val, max_bin
 
 def dataCollectSimp(chan, lines):
 	# In its current iteration, 10 seconds of data are printed per line
@@ -271,3 +273,81 @@ def dataCollect4Chan(chan1, chan2, chan3, chan4, lines):
 		count1 += 1 # Iterations will continue until reaching the desired run-time of simulation
 	
 	file.close()
+def sync_len_2_time(length):
+	accum_time_sec = (length/fft_len)/f_s
+	return accum_time_sec
+
+# Define a function that allows Python to quickly morph the accumulator sync trigger system to match desired integration time
+def struct_morph(bit_length):
+	fpga.write_int('cum_trigger_accum_len', (2**bit_length)-1) 
+	fpga.write_int('cum_trigger_accum_reset', 0) #
+	fpga.write_int('cum_trigger_accum_reset', 1) #
+	fpga.write_int('cum_trigger_accum_reset', 0) #
+	return
+
+def is_detectable(pwr_in, b_o_i):
+	# This function will act as the main conduit for testing the minimum detectable power of the LISS firmware 
+	# It is designed for a single-tone input and will provide the output power in the B.O.I. for a given input power 
+	# For each input power level, a number of different integration times will be tested 
+	file = open('min_pwr_test_%d_input.csv'%(pwr_in), 'w')
+	writer = csv.writer(file)
+	powers = np.arange(17,25) # range of accumulator sync lengths in base 2 bits
+	taus = sync_len_2_time(2**powers[:]) # Convert accum_len values into mirror time values (in seconds)
+
+	# Say for example you have an input power of -30dB 
+	# Calling this function with said power as the argument will cycle the accumulator length through the powers array...
+	# and find the power at the B.O.I.
+	# It will also check to make sure that the maximum power is in the B.O.I. and if not, will return a false in the output
+	
+	itr = 0 
+	
+	output_pwr = np.zeros([len(taus), 3])
+	
+	# The output_pwr array will contain all of the goodies resulting from this function
+	# It is comprised of n columns where n = number of tested integration times
+	# as well as 3 rows: the first being the integration time, the second being the output power, and the third being whether it is detectable; [tau, pwr_out, detectable]
+	# An example column would be [0.065536, 66.5, 1]; note that the final column element while type int represents a Boolean where 0 = False and 1 = True
+	while itr < len(taus):
+		struct_morph(powers[itr])
+
+		# Sometimes the firmware needs to activate the accumulator a couple of times before it gets the correct readings
+		# Make a routine to run find_max_bin 5 times and take the mode of the output values
+	
+		max_bins = np.arange(0,5)
+		max_vals = np.arange(0,5)
+
+		for i in max_bins:
+			max_vals[i], max_bins[i] = findmaxbin()
+		
+		# Take the mode bin and mean value as a broad litmus test on efficacy
+		mode_bin = stats.mode(max_bins)
+		mean_val = np.median(max_vals)
+
+		if mode_bin == b_o_i:
+			detectable = True
+			print('Max power detected at bin %d with average power of %d dBW'%(mode_bin, mean_val))
+			print('With an input power of %d and integration time of %d ms, signal is detected'%(pwr_in, taus[itr]))
+		else:
+			detectable = False
+			print('Max power detected at bin %d instead of estimated bin of %d'%(mode_bin, b_o_i))
+			print('With an input power of %d and integration time of %d ms, signal is NOT detected'%(pwr_in, taus[itr]))
+		
+		output_pwr[itr] = [taus[itr], mean_val, detectable]
+
+		# At this point, we have successfully tested a tau element at a given input power and have the resulting output
+		# Only thing left to do is iterate to the next integration time and test again
+		# And I guess write everything to a CSV file for the sake of completion
+
+		writer.writerow(output_pwr[itr])
+		itr += 1
+		print('Iteration %d of %d for input power of %d'%(itr, len(taus)-1, pwr_in))
+	
+	print('for input power %d, output powers versus integration times are:'%(pwr_in))
+	print(output_pwr)
+	return output_pwr
+
+
+
+
+	
+	
