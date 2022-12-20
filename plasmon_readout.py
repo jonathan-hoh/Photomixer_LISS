@@ -19,7 +19,7 @@ fft_len = 2**9
 katcp_port=7147
 roach = '192.168.40.79'
 #firmware_fpg = 'liss_gold_v1.fpg'
-firmware_fpg = 'lock_in_gold_enhanced.fpg'
+firmware_fpg = 'liss_gold_enhanced.fpg'
 fpga = casperfpga.katcp_fpga.KatcpFpga(roach, timeout = 3.)
 time.sleep(1)
 if (fpga.is_connected() == True):
