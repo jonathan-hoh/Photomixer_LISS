@@ -320,7 +320,7 @@ def is_detectable(pwr_in, b_o_i):
 			max_vals[i], max_bins[i] = findmaxbin()
 		
 		# Take the mode bin and mean value as a broad litmus test on efficacy
-		mode_bin = stats.mode(max_bins)
+		mode_bin = stats.mode(max_bins)[1][0]
 		mean_val = np.median(max_vals)
 
 		if mode_bin == b_o_i:
