@@ -13,7 +13,7 @@ import csv
 import scipy.stats as stats
 
 # Establish parameters and constant based on hardware design
-f_s = 500*10**3 # Sampling freq in Hertz
+f_s = 500000.0 # Sampling freq in Hertz
 fft_len = 2**9
 
 katcp_port=7147
