@@ -327,12 +327,14 @@ def is_detectable(pwr_in, b_o_i):
 			detectable = True
 			print('Max power detected at bin %d with average power of %d dBW'%(mode_bin, mean_val))
 			print('With an input power of %d and integration time of %f ms, signal is detected'%(pwr_in, taus[itr]))
+			result = 'detected'
 		else:
 			detectable = False
 			print('Max power detected at bin %d instead of estimated bin of %d'%(mode_bin, b_o_i))
 			print('With an input power of %d and integration time of %f ms, signal is NOT detected'%(pwr_in, taus[itr]))
+			result = 'signal lost'
 		
-		output_pwr[itr] = [taus[itr], mean_val, detectable]
+		output_pwr[itr] = [taus[itr], mean_val, result]
 
 		# At this point, we have successfully tested a tau element at a given input power and have the resulting output
 		# Only thing left to do is iterate to the next integration time and test again
