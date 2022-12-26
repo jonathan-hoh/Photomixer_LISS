@@ -326,11 +326,11 @@ def is_detectable(pwr_in, b_o_i):
 		if mode_bin == b_o_i:
 			detectable = True
 			print('Max power detected at bin %d with average power of %d dBW'%(mode_bin, mean_val))
-			print('With an input power of %d and integration time of %d ms, signal is detected'%(pwr_in, taus[itr]))
+			print('With an input power of %d and integration time of %f ms, signal is detected'%(pwr_in, taus[itr]))
 		else:
 			detectable = False
 			print('Max power detected at bin %d instead of estimated bin of %d'%(mode_bin, b_o_i))
-			print('With an input power of %d and integration time of %d ms, signal is NOT detected'%(pwr_in, taus[itr]))
+			print('With an input power of %d and integration time of %f ms, signal is NOT detected'%(pwr_in, taus[itr]))
 		
 		output_pwr[itr] = [taus[itr], mean_val, detectable]
 
@@ -340,7 +340,9 @@ def is_detectable(pwr_in, b_o_i):
 
 		writer.writerow(output_pwr[itr])
 		itr += 1
-		print('Iteration %d of %d for input power of %d'%(itr, len(taus)-1, pwr_in))
+		print('')
+		print('')
+		#print('Iteration %d of %d for input power of %d'%(itr, len(taus)-1, pwr_in))
 	
 	print('for input power %d, output powers versus integration times are:'%(pwr_in))
 	print(output_pwr)
