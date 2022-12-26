@@ -344,7 +344,8 @@ def is_detectable(pwr_in, b_o_i):
 		print('')
 		#print('Iteration %d of %d for input power of %d'%(itr, len(taus)-1, pwr_in))
 	
-	print('for input power %d, final results of integration test in form of [integration time, output power, detectable?]'%(pwr_in))
+	print('for input power %d, final results of integration test in form of:'%(pwr_in))
+	print('[integration time, output power, detectable?]')
 	#print(output_pwr)
 	return output_pwr
 
