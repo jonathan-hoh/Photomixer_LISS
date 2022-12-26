@@ -301,7 +301,7 @@ def is_detectable(pwr_in, b_o_i):
 	
 	itr = 0 
 	
-	output_pwr = np.zeros([len(taus), 3])
+	output_pwr = np.zeros([len(taus), 2])
 	
 	# The output_pwr array will contain all of the goodies resulting from this function
 	# It is comprised of n columns where n = number of tested integration times
