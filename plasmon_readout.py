@@ -305,8 +305,8 @@ def is_detectable(pwr_in, b_o_i):
 	
 	# The output_pwr array will contain all of the goodies resulting from this function
 	# It is comprised of n columns where n = number of tested integration times
-	# as well as 3 rows: the first being the integration time, the second being the output power, and the third being whether it is detectable; [tau, pwr_out, detectable]
-	# An example column would be [0.065536, 66.5, 1]; note that the final column element while type int represents a Boolean where 0 = False and 1 = True
+	# as well as 3 rows: the first being the integration time (in ms), the second being the output power, and the third being whether it is detectable; [tau, pwr_out, detectable]
+	# An example column would be [65.536, 66.5, 1]; note that the final column element while type int represents a Boolean where 0 = False and 1 = True
 	while itr < len(taus):
 		struct_morph(powers[itr])
 
@@ -332,7 +332,7 @@ def is_detectable(pwr_in, b_o_i):
 			print('Max power detected at bin %d instead of estimated bin of %d'%(mode_bin, b_o_i))
 			print('With an input power of %d and integration time of %f ms, signal is NOT detected'%(pwr_in, taus[itr]))
 		
-		output_pwr[itr] = [taus[itr], mean_val, int(detectable)]
+		output_pwr[itr] = [taus[itr]*1000, mean_val, int(detectable)]
 
 		# At this point, we have successfully tested a tau element at a given input power and have the resulting output
 		# Only thing left to do is iterate to the next integration time and test again
