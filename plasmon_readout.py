@@ -291,7 +291,7 @@ def is_detectable(pwr_in, b_o_i):
 	# For each input power level, a number of different integration times will be tested 
 	file = open('min_pwr_test_%d_input.csv'%(pwr_in), 'w')
 	writer = csv.writer(file)
-	powers = np.arange(17,25) # range of accumulator sync lengths in base 2 bits
+	powers = np.arange(13,25) # range of accumulator sync lengths in base 2 bits
 	taus = sync_len_2_time(2**powers[:]) # Convert accum_len values into mirror time values (in seconds)
 
 	# Say for example you have an input power of -30dB 
