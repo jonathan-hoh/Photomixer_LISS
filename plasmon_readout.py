@@ -172,9 +172,9 @@ def findmaxbin():
 	I, Q = read_accum_snap()
 	I = I[2:]
 	Q = Q[2:]
-	mags =(np.sqrt(I**2 + Q**2))[:508]
+	mags =(np.sqrt(I**2 + Q**2))[2:508]
 	#mags = 20*np.log10(mags/np.max(mags))[:1016]
-	mags = 10*np.log10(mags+1e-20)[:508]
+	mags = 10*np.log10(mags+1e-20)[2:508]
 	max_bin = np.argmax(mags)
 	max_val = np.max(mags)
 	#print('Maximum power of %d dBW at bin %d'%(max_val, max_bin))
