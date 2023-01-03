@@ -316,7 +316,7 @@ def is_detectable(pwr_in, b_o_i):
 		# Make a routine to run find_max_bin 5 times and take the mode of the output values
 	
 		max_bins = np.arange(0,5)
-		max_vals = np.array[(0.0,0.0,0.0,0.0,0.0)]
+		max_vals = np.array([0.0,0.0,0.0,0.0,0.0])
 
 		for i in max_bins:
 			max_vals[i], max_bins[i] = findmaxbin()
