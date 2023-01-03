@@ -294,9 +294,8 @@ def is_detectable(pwr_in, b_o_i):
 	#powers = np.arange(13,25) # range of accumulator sync lengths in base 2 bits
 
 	### Only using taus that relate to equivalent times on analog LIA (1ms & 30ms) in bit-width(18, 22) ###
-	powers = (18,22)
+	powers = np.array([18,22])
 	taus = sync_len_2_time(2**powers[:]) # Convert accum_len values into mirror time values (in seconds)
-
 	# Say for example you have an input power of -30dB 
 	# Calling this function with said power as the argument will cycle the accumulator length through the powers array...
 	# and find the power at the B.O.I.
