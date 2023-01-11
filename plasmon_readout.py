@@ -289,8 +289,8 @@ def is_detectable(pwr_in, b_o_i):
 	# This function will act as the main conduit for testing the minimum detectable power of the LISS firmware 
 	# It is designed for a single-tone input and will provide the output power in the B.O.I. for a given input power 
 	# For each input power level, a number of different integration times will be tested 
-	file = open('min_pwr_test_%d_input.csv'%(pwr_in), 'w')
-	writer = csv.writer(file)
+	#file = open('min_pwr_test_%d_input.csv'%(pwr_in), 'w')
+	#writer = csv.writer(file)
 	#powers = np.arange(13,25) # range of accumulator sync lengths in base 2 bits
 
 	### Only using taus that relate to equivalent times on analog LIA (1ms & 30ms) in bit-width(18, 22) ###
@@ -348,7 +348,7 @@ def is_detectable(pwr_in, b_o_i):
 		print('')
 		#print('Iteration %d of %d for input power of %d'%(itr, len(taus)-1, pwr_in))
 	
-	print('for input power %d, final results of integration test in form of:'%(pwr_in))
+	print('Final results of integration test in form of')
 	print('[integration time, output power, detectable?]')
 	#print(output_pwr)
 	return output_pwr
