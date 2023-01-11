@@ -330,11 +330,11 @@ def is_detectable(b_o_i):
 		if mode_bin == b_o_i:
 			detectable = True
 			print('Max power detected at bin %d with average power of %d dBW'%(mode_bin, mean_val))
-			print('With an input power of %d and integration time of %f ms, signal is detected'%(pwr_in, taus[itr]))
+			print('With an integration time of %f ms, signal is detected'%(taus[itr]))
 		else:
 			detectable = False
 			print('Max power detected at bin %d instead of estimated bin of %d'%(mode_bin, b_o_i))
-			print('With an input power of %d and integration time of %f ms, signal is NOT detected'%(pwr_in, taus[itr]))
+			print('With an integration time of %f ms, signal is NOT detected'%(taus[itr]))
 		
 		output_pwr[itr] = [taus[itr]*1000, mean_val, int(detectable)]
 
