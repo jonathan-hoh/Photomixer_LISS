@@ -285,7 +285,7 @@ def struct_morph(bit_length):
 	fpga.write_int('cum_trigger_accum_reset', 0) #
 	return
 
-def is_detectable(pwr_in, b_o_i):
+def is_detectable(b_o_i):
 	# This function will act as the main conduit for testing the minimum detectable power of the LISS firmware 
 	# It is designed for a single-tone input and will provide the output power in the B.O.I. for a given input power 
 	# For each input power level, a number of different integration times will be tested 
