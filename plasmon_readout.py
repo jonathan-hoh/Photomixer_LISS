@@ -342,7 +342,7 @@ def is_detectable(b_o_i):
 		# Only thing left to do is iterate to the next integration time and test again
 		# And I guess write everything to a CSV file for the sake of completion
 
-		writer.writerow(output_pwr[itr])
+		#writer.writerow(output_pwr[itr])
 		itr += 1
 		print('')
 		print('')
