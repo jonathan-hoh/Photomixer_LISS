@@ -112,15 +112,41 @@ def read_accum_snap():
 
 def bin_reading(bin):
 	i = 0
-	i_vec = []
-	q_vec = []
-	while i < 1000:
+	integrator= []
+	while i < 100:
 		I,Q = read_accum_snap()
-		i_vec.append(I[bin])
-		q_vec.append(Q[bin])
+		I = I[2:]
+		Q = Q[2:]
+		mags =(np.sqrt(I**2 + Q**2))[:1016]
+		integrator.append(mags[bin])
 		i += 1
-	plt.plot(i_vec)
-	return i_vec, q_vec
+	avg_mag = np.average(integrator)
+	return avg_mag
+
+def tri_bin_reading(bin1, bin2, bin3, avg_samples):
+	i = 0
+	integrator1= np.zeros(avg_samples)
+	integrator2= np.zeros(avg_samples)
+	integrator3= np.zeros(avg_samples)
+	while i < avg_samples:
+		I,Q = read_accum_snap()
+		I = I[2:]
+		Q = Q[2:]
+		mag1 =(np.sqrt(I**2 + Q**2))[bin1]
+		mag2 =(np.sqrt(I**2 + Q**2))[bin2]
+		mag3 =(np.sqrt(I**2 + Q**2))[bin3]
+		integrator1[i] = mag1
+		integrator2[i] = mag2
+		integrator3[i] = mag3
+		i += 1
+	avg_mag1 = np.average(integrator1)
+	avg_mag2 = np.average(integrator2)
+	avg_mag3 = np.average(integrator3)
+	print('*** Power averaged over %d samples ***'%(avg_samples))
+	print('bin %d average power: %f'%(bin1, avg_mag1))
+	print('bin %d average power: %f'%(bin2, avg_mag2))
+	print('bin %d average power: %f'%(bin3, avg_mag3))
+	return avg_mag1, avg_mag2, avg_mag3
 
 def plotADC():
 		# Plots the ADC timestream
