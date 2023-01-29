@@ -117,7 +117,8 @@ def bin_reading(bin):
 		I,Q = read_accum_snap()
 		I = I[2:]
 		Q = Q[2:]
-		mags =(np.sqrt(I**2 + Q**2))[:1016]
+		mags =(np.sqrt(I**2 + Q**2))[bin]
+		mags = 10*np.log10(mags+1e-20)
 		integrator.append(mags[bin])
 		i += 1
 	avg_mag = np.average(integrator)
@@ -201,7 +202,7 @@ def findmaxbin():
 	mags =(np.sqrt(I**2 + Q**2))[2:508]
 	#mags = 20*np.log10(mags/np.max(mags))[:1016]
 	mags = 10*np.log10(mags+1e-20)[2:508]
-	max_bin = np.argmax(mags)
+	max_bin = np.argmax(mags)+3
 	max_val = np.max(mags)
 	#print('Maximum power of %d dBW at bin %d'%(max_val, max_bin))
 	return max_val, max_bin
