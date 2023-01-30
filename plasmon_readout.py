@@ -202,7 +202,7 @@ def findmaxbin():
 	mags =(np.sqrt(I**2 + Q**2))[2:508]
 	#mags = 20*np.log10(mags/np.max(mags))[:1016]
 	mags = 10*np.log10(mags+1e-20)[2:508]
-	max_bin = np.argmax(mags)+3
+	max_bin = np.argmax(mags)+4
 	max_val = np.max(mags)
 	#print('Maximum power of %d dBW at bin %d'%(max_val, max_bin))
 	return max_val, max_bin
