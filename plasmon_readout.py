@@ -110,16 +110,16 @@ def read_accum_snap():
 		Q = accum_data[1::2]
 		return I, Q
 
-def bin_reading(bin):
+def bin_reading(bin, avg_samples):
 	i = 0
-	integrator= []
-	while i < 100:
+	integrator= np.zeros(avg_samples)
+	while i < avg_samples:
 		I,Q = read_accum_snap()
 		I = I[2:]
 		Q = Q[2:]
 		mags =(np.sqrt(I**2 + Q**2))[bin]
-		mags = 10*np.log10(mags+1e-20)
-		integrator.append(mags[bin])
+		magsdB = 10*np.log10(mags+1e-20)
+		integrator[i] = magsdB
 		i += 1
 	avg_mag = np.average(integrator)
 	return avg_mag
