@@ -118,8 +118,8 @@ def bin_reading(bin, avg_samples):
 		I = I[2:]
 		Q = Q[2:]
 		mags =(np.sqrt(I**2 + Q**2))[bin]
-		magsdB = 10*np.log10(mags+1e-20)
-		integrator[i] = magsdB
+		#magsdB = 10*np.log10(mags+1e-20)
+		integrator[i] = mags
 		i += 1
 	avg_mag = np.average(integrator)
 	return avg_mag
