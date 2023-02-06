@@ -9,9 +9,8 @@ import time
 import matplotlib.pyplot as plt
 import struct
 import numpy as np
-import csv
 import scipy.stats as stats
-
+from csv import writer
 # Establish parameters and constant based on hardware design
 f_s = 500000.0 # Sampling freq in Hertz
 fft_len = 2**9
@@ -124,30 +123,37 @@ def bin_reading(bin, avg_samples):
 	avg_mag = np.average(integrator)
 	return avg_mag
 
-def tri_bin_reading(bin1, bin2, bin3, avg_samples):
-	i = 0
-	integrator1= np.zeros(avg_samples)
-	integrator2= np.zeros(avg_samples)
-	integrator3= np.zeros(avg_samples)
-	while i < avg_samples:
-		I,Q = read_accum_snap()
-		I = I[2:]
-		Q = Q[2:]
-		mag1 =(np.sqrt(I**2 + Q**2))[bin1]
-		mag2 =(np.sqrt(I**2 + Q**2))[bin2]
-		mag3 =(np.sqrt(I**2 + Q**2))[bin3]
-		integrator1[i] = mag1
-		integrator2[i] = mag2
-		integrator3[i] = mag3
-		i += 1
-	avg_mag1 = np.average(integrator1)
-	avg_mag2 = np.average(integrator2)
-	avg_mag3 = np.average(integrator3)
-	print('*** Power averaged over %d samples ***'%(avg_samples))
-	print('bin %d average power: %f'%(bin1, avg_mag1))
-	print('bin %d average power: %f'%(bin2, avg_mag2))
-	print('bin %d average power: %f'%(bin3, avg_mag3))
-	return avg_mag1, avg_mag2, avg_mag3
+def leak_testing(bin2, pwr_in, avg_samples):
+	with open('C:\Users\hohjo\Documents\Doctoral_Work\Jarrahi_Work\LISS_testing\channel_shape\bin_%d_100_dBm.csv'%(bin2), 'a') as f_object:
+		writer_object = writer(f_object)
+		bin1 = bin2 - 1 
+		bin3 = bin2 + 1 
+		i = 0
+		integrator1= np.zeros(avg_samples)
+		integrator2= np.zeros(avg_samples)
+		integrator3= np.zeros(avg_samples)
+		while i < avg_samples:
+			I,Q = read_accum_snap()
+			I = I[2:]
+			Q = Q[2:]
+			mag1 =(np.sqrt(I**2 + Q**2))[bin1]
+			mag2 =(np.sqrt(I**2 + Q**2))[bin2]
+			mag3 =(np.sqrt(I**2 + Q**2))[bin3]
+			integrator1[i] = mag1
+			integrator2[i] = mag2
+			integrator3[i] = mag3
+			i += 1
+		avg_mag1 = np.average(integrator1)
+		avg_mag2 = np.average(integrator2)
+		avg_mag3 = np.average(integrator3)
+		powers = [pwr_in, avg_mag1, avg_mag2, avg_mag3]
+		writer_object.writerow(powers)
+		f_object.close()
+		print('*** Power averaged over %d samples ***'%(avg_samples))
+		print('bin %d average power: %f'%(bin1, avg_mag1))
+		print('bin %d average power: %f'%(bin2, avg_mag2))
+		print('bin %d average power: %f'%(bin3, avg_mag3))
+	return 
 
 def plotADC():
 		# Plots the ADC timestream
@@ -330,7 +336,7 @@ def is_detectable(b_o_i):
 	
 	itr = 0 
 	
-	output_pwr = np.zeros([len(taus), 3])
+	output_pwr = np.zeros([len(tas), 3])
 	
 	# The output_pwr array will contain all of the goodies resulting from this function
 	# It is comprised of n columns where n = number of tested integration times
