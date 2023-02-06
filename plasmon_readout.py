@@ -124,7 +124,7 @@ def bin_reading(bin, avg_samples):
 	return avg_mag
 
 def leak_testing(bin2, pwr_in, avg_samples):
-	with open('C:\Users\hohjo\Documents\Doctoral_Work\Jarrahi_Work\LISS_testing\channel_shape\bin_%d_100_dBm.csv'%(bin2), 'a') as f_object:
+	with open('bin_%d_100_dBm.csv'%(bin2), 'a') as f_object:
 		writer_object = writer(f_object)
 		bin1 = bin2 - 1 
 		bin3 = bin2 + 1 
