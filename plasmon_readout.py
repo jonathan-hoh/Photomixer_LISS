@@ -123,6 +123,16 @@ def bin_reading(bin, avg_samples):
 	avg_mag = np.average(integrator)
 	return avg_mag
 
+def neighbor_test(center):
+	lowest_mag = bin_reading(center-2, 160)
+	low_mag = bin_reading(center-1, 160)
+	center_mag = bin_reading(center, 160)
+	high_mag = bin_reading(center+1, 160)
+	highest_mag = bin_reading(center+2, 160)
+	print('accumulated powers are:')
+	print([lowest_mag, low_mag, center_mag, high_mag, highest_mag])
+	return
+
 def leak_testing(bin2, pwr_in, avg_samples):
 	with open('bin_%d_100_dBm.csv'%(bin2), 'a') as f_object:
 		writer_object = writer(f_object)
