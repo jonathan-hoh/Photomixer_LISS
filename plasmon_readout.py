@@ -10,6 +10,7 @@ import matplotlib.pyplot as plt
 import struct
 import numpy as np
 import scipy.stats as stats
+import csv
 from csv import writer
 # Establish parameters and constant based on hardware design
 f_s = 500000.0 # Sampling freq in Hertz
