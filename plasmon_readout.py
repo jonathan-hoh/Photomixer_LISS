@@ -29,15 +29,25 @@ else:
 
 stime = time.time()
 fpga.upload_to_ram_and_program(firmware_fpg)
-print ('Using Jon Hohs Proprietary Black-Magic Optimization Algorithm \nFPGA @ address %s programmed in %.2f seconds \n\n Jons withcraft reduced program time by %.2f seconds' % (fpga.host, time.time() - stime, 31.89*(time.time() - stime)))
+print ('Using the Proprietary Big Sauce Boss Black-Magic Optimization Algorithm \nFPGA @ address %s programmed in %.2f seconds \n\n Jons withcraft reduced program time by %.2f seconds' % (fpga.host, time.time() - stime, 31.89*(time.time() - stime)))
 time.sleep(1)
 print ('\n NAND Gate Flash Success')
 time.sleep(1)
 print('\nFirware ready for execution')
-# Initializing registers
+# Initializing registersr
+time.sleep(1)
+print()
+print('Some Availabe Functions (more available if you examine the code):')
+print('1. plot_ADC == plots timestream of signal currently being sampled by the ADC')
+print('2. plot_FFT() == shows live updating FFT output in frequency spSSSSace')
+print('3. plot_Accum() == shows live updating accumulator power in frequency space')
+print('4. bin_reading(bin, cycles) == returns accumulated power in chosen bin,\n averaged by the number of accumulations chosen')
+print('5. dataCollectSimp(bin, lines) == takes data of selected spectral channel and saves as CSV \n (a "line" is equivalent to aboout 10 seconds of integration)')
+print('6. dataCollect4Chan(chan1, chan2, chan 3, chan 4, lines) == \n sames as beforem but can choose 4 bins to measure ')
 
-fpga.write_int('fft_shift', 2**9)
-fpga.write_int('cordic_freq', 1) # 
+fpga
+.write_int('fft_shift', 2**9)
+fpga.write_int('cordic_freq', 26) # 
 fpga.write_int('cum_trigger_accum_len', 2**23-1) # 2**19/2**9 = 1024 accumulations
 fpga.write_int('cum_trigger_accum_reset', 0) #
 fpga.write_int('cum_trigger_accum_reset', 1) #
@@ -218,6 +228,8 @@ def findmaxbin():
 	Q = Q[2:]
 	mags =(np.sqrt(I**2 + Q**2))[2:508]
 	#mags = 20*np.log10(mags/np.max(mags))[:1016]
+	# It is pointless looking at all 1016 channels, especially since it is a single-ended mixer internally 
+	# will be occupied by
 	mags = 10*np.log10(mags+1e-20)[2:508]
 	max_bin = np.argmax(mags)+4
 	max_val = np.max(mags)
@@ -347,7 +359,7 @@ def is_detectable(b_o_i):
 	
 	itr = 0 
 	
-	output_pwr = np.zeros([len(tas), 3])
+	output_pwr = np.zeros([len(taus), 3])
 	
 	# The output_pwr array will contain all of the goodies resulting from this function
 	# It is comprised of n columns where n = number of tested integration times
